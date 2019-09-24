@@ -4,7 +4,6 @@
 
 import sys, copy, heapq, math
 
-# state class supplied by Dr. Phillips 
 class state():
     def __init__(self, tiles):
         self.xpos = 0
@@ -56,7 +55,6 @@ class state():
         s.tiles[s.xpos][s.ypos] = 0
         return s
 
-# Set class provided by Dr. Phillips
 class Set():
     def __init__(self):
         self.thisSet = set()
@@ -68,7 +66,6 @@ class Set():
     def isMember(self,query):
         return query.__hash__() in self.thisSet
 
-# PriorityQueue class provided by Dr. Phillips
 class PriorityQueue():
     def __init__(self):
         self.thisQueue = []
@@ -121,24 +118,6 @@ class node():
                     xpos1, ypos1 = self.coord[self.puzzle[i][j]]
                     xpos2, ypos2 = self.coord[goal[i][j]]
                     count += abs(xpos1-xpos2) + abs(ypos1-ypos2)
-            return count
-        # if the heuristic is 3 then perform the novel heuristic
-        # this heuristic is like the misplaced tile heuristic but instead of
-        # every time it is just the ones along each diagonal of the box
-        # essentially creating an X
-        elif h is 3:
-            count = 0
-            if goal[0][0] != self.puzzle[0][0]:
-                count += 1
-            if goal[0][2] != self.puzzle[0][2]:
-                count += 1
-            if goal[1][1] != self.puzzle[1][1]:
-                count += 1
-            if goal[2][0] != self.puzzle[2][0]:
-                count += 1
-            if goal[2][2] != self.puzzle[2][2]:
-                count += 1
-            #print("h = ", count)
             return count
 
     # is the puzzle of the node the goal? if so, f = 0, if not, f = h + g
@@ -263,9 +242,6 @@ def aStar(root, puzzle):
 
 
 
-
-
-
 # take in the heuristic value from the command line and create a nested list
 # from the puzzle given
 h = int(sys.argv[1])
@@ -274,8 +250,6 @@ def main():
     numbers = sys.stdin.read()
     temp = list(map(int, numbers.split()))
     puzzle = [temp[i:i+3] for i in range(0, len(temp), 3)]
-
-    puzzle = [[6, 3, 4], [1, 0, 2], [7, 5, 8]]
         
     #create the root and pass it to the aStar function and begin searching
     root = node(puzzle, None)
