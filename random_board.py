@@ -1,6 +1,5 @@
 import sys, copy, random
 
-# state class supplied by Dr. Phillips
 class state():
     def __init__(self, tiles):
         self.xpos = 0
