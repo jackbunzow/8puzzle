@@ -1,7 +1,6 @@
 #The purpose of this program is to generate random puzzles that can be solved by your A* agent described below.
 import sys, copy, random
 
-# state class supplied by Dr. Phillips
 class state():
     def __init__(self, tiles):
         self.xpos = 0
