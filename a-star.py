@@ -1,9 +1,13 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 # Create a Python program which performs A* search for the 8-puzzle problem (a-star.py)
 # The purpose of this program is to determine a solution (sequential set of board configurations
 # leading back to the goal configuration [[0, 1, 2], [3, 4, 5], [6, 7, 8]]
 
 import sys, copy, heapq, math
 
+# state class supplied by Dr. Phillips 
 class state():
     def __init__(self, tiles):
         self.xpos = 0
@@ -55,6 +59,7 @@ class state():
         s.tiles[s.xpos][s.ypos] = 0
         return s
 
+# Set class provided by Dr. Phillips
 class Set():
     def __init__(self):
         self.thisSet = set()
@@ -66,6 +71,7 @@ class Set():
     def isMember(self,query):
         return query.__hash__() in self.thisSet
 
+# PriorityQueue class provided by Dr. Phillips
 class PriorityQueue():
     def __init__(self):
         self.thisQueue = []
@@ -101,7 +107,7 @@ class node():
         if h is 0:
             return 0
         # if the heuristic is 1 then the heuristic value is the number of tiles displaced 
-        # from the goal + step cost
+        # from the goal state
         elif h is 1:
             count = 0
             for i in range(3):
@@ -110,7 +116,6 @@ class node():
                         count += 1
             return count
         # if the heuristic is 2 then the heuristic value is the sum of the Manhattan distance
-        # + step cost
         elif h is 2:
             count = 0
             for i in range(3):
@@ -137,7 +142,7 @@ class node():
                 count += 1
             return count
 
-    # is the puzzle of the node the goal? if so, f = 0, if not, f = h + g
+    # check if the puzzle being passed is the goal
     def isGoal(self):
         count = 0
         for i in range(3):
@@ -167,6 +172,8 @@ class node():
             self = self.parent
         reverse.append(self)
 
+        # use the formula to calculate b is d is not 0
+        # to avoid errors
         if d is not 0:
             b = N**(1.0/d)
         else:
@@ -215,14 +222,13 @@ def children(node):
     
     return child
 
-
 # perform the A* seearch
 def aStar(root, puzzle):
     # create a closed list and open list (frontier) and add the first node to the frontier
     frontier = PriorityQueue()
     closed = Set()
     frontier.push(root)
-    # while the frontier is empty, keep searching
+    # while the frontier is not empty, keep searching
     while not frontier.isEmpty():
         #set current equal to the node at the front of the queue
         current = frontier.pop()
@@ -232,39 +238,34 @@ def aStar(root, puzzle):
             break
         # if the current node is not the goal, keep going
         else:
-            # create a list of the children's puzzle states
+            # add the current node to the closed list
             closed.add(current.tuple)
+            # create a list of the children's puzzle states
             moves = children(current)
             #for each puzzle state list of children, create their own node
             for item in moves:
-                #create a tuple of the state return so that it can be check that its not
+                # reate a tuple of the state return so that it can be check that its not
                 # same orientation as it's parent
                 itemsTiles = tuple(sum(item.tiles, []))
-                #create a child node and add it to the frontier
+                # create a child node and add it to the frontier if the child's state
+                # is not already a state of a parent
                 if not closed.isMember(itemsTiles):
                     child = node(item.tiles, current)
                     frontier.push(child)
 
 
-
-
-
-
-
-# take in the heuristic value from the command line and create a nested list
-# from the puzzle given
+# take in the heuristic value from the command line
 h = int(sys.argv[1])
+# goal puzzle orientation
 goal = [[0, 1, 2], [3, 4, 5], [6, 7, 8]]
 def main():
+    # turn the shuffled puzzle from stdin to a nested list
     numbers = sys.stdin.read()
     temp = list(map(int, numbers.split()))
     puzzle = [temp[i:i+3] for i in range(0, len(temp), 3)]
-
-    #puzzle = [[6, 3, 4], [1, 0, 2], [7, 5, 8]]
         
     #create the root and pass it to the aStar function and begin searching
     root = node(puzzle, None)
     aStar(root, puzzle)
-main()
-    aStar(root, puzzle)
+    
 main()
