@@ -87,12 +87,12 @@ class node():
         nodeid += 1
         self.parent = parent
         self.puzzle = puzzle
-        self.state = state(self.puzzle)
         #create a one dimensional tuple of the puzzle
         self.tuple = tuple(sum(self.puzzle, []))
         # coordinates of each number in the goal nested list
         self.coord = {0:(0,0), 1:(1,0), 2:(2,0), 3:(0,1), 4:(1,1), 5:(2,1), 6:(0,2), 7:(1,2), 8:(2,2)}
-        self.f =  self.heuristic() + self.totalStep() if parent is not None else 0
+        self.g = parent.g + 1 if parent is not None else 0
+        self.f =  self.heuristic() + self.g
 
     # heuristic functions. The heuristic value given on command line determines
     # the heuristic to be used
@@ -118,6 +118,23 @@ class node():
                     xpos1, ypos1 = self.coord[self.puzzle[i][j]]
                     xpos2, ypos2 = self.coord[goal[i][j]]
                     count += abs(xpos1-xpos2) + abs(ypos1-ypos2)
+            return count
+        # if the heuristic is 3 then perform the novel heuristic
+        # this heuristic is like the misplaced tile heuristic but instead of
+        # every time it is just the ones along each diagonal of the box
+        # essentially creating an X
+        elif h is 3:
+            count = 0
+            if goal[0][0] != self.puzzle[0][0]:
+                count += 1
+            if goal[0][2] != self.puzzle[0][2]:
+                count += 1
+            if goal[1][1] != self.puzzle[1][1]:
+                count += 1
+            if goal[2][0] != self.puzzle[2][0]:
+                count += 1
+            if goal[2][2] != self.puzzle[2][2]:
+                count += 1
             return count
 
     # is the puzzle of the node the goal? if so, f = 0, if not, f = h + g
@@ -162,17 +179,6 @@ class node():
         # print all the states of the puzzles from shuffled to goal
         while len(reverse):
             print(reverse.pop())
-
-    def totalStep(self):
-        count = 0
-        step = 0
-        while self.parent is not None:
-            count += 1
-            self = self.parent
-
-        for x in range(count, 0, -1):
-            step += x
-        return step
 
     #find the depth of the goal node
     def depth(self):
@@ -242,6 +248,9 @@ def aStar(root, puzzle):
 
 
 
+
+
+
 # take in the heuristic value from the command line and create a nested list
 # from the puzzle given
 h = int(sys.argv[1])
@@ -250,8 +259,12 @@ def main():
     numbers = sys.stdin.read()
     temp = list(map(int, numbers.split()))
     puzzle = [temp[i:i+3] for i in range(0, len(temp), 3)]
+
+    #puzzle = [[6, 3, 4], [1, 0, 2], [7, 5, 8]]
         
     #create the root and pass it to the aStar function and begin searching
     root = node(puzzle, None)
+    aStar(root, puzzle)
+main()
     aStar(root, puzzle)
 main()
