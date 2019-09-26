@@ -1,10 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
-#The purpose of this program is to generate random puzzles that can be solved by your A* agent described below.
 import sys, copy, random
 
-# state class supplied by Dr. Phillips
 # used to move state's 0 in different directions
 class state():
     def __init__(self, tiles):
